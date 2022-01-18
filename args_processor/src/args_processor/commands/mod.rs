@@ -7,7 +7,7 @@ fn commands_list() -> String {
     for command in build_commands_collection() {
         list.push_str(&command.command());
     }
-    return list;
+    list
 }
 
 pub trait CommandTrait {

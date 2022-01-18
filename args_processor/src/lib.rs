@@ -13,7 +13,7 @@ pub mod args_processor {
         if number == 0 {
             panic!("{}", NO_ARG_PROVIDED_ERROR.to_string())
         } else {
-            return true;
+            true
         }
     }
 
@@ -25,21 +25,21 @@ pub mod args_processor {
         let arguments_iter = arguments.iter().filter(|arg| !arg.contains("jack_cat_cli")); //filter to remove script from arguments list
         let mut current_option = String::from("");
         for arg in arguments_iter {
-            if args_processor.command == String::from("") {
+            if args_processor.command == *"" {
                 args_processor.command = String::from(arg)
-            } else if current_option == String::from("") {
+            } else if current_option == *"" {
                 current_option = String::from(arg);
-            } else if current_option != String::from("") {
+            } else if current_option != *"" {
                 args_processor
                     .options
-                    .insert(String::from(current_option), String::from(arg));
+                    .insert(current_option, String::from(arg));
                 current_option = String::from("");
             }
         }
-        if current_option != String::from("") {
+        if current_option != *"" {
             panic!("{}", OPTIONS_WITH_NO_VALUE_ERROR.to_string())
         }
-        return args_processor;
+        args_processor
     }
 
     #[derive(Default, Debug)]
@@ -63,13 +63,12 @@ pub mod args_processor {
         }
 
         fn validate_options(&self, options: Vec<String>) -> bool {
-            let mut found = true;
             for option in self.options.keys() {
                 if !options.contains(option) {
-                    found = false
+                    return false;
                 }
             }
-            return found;
+            true
         }
     }
 }
