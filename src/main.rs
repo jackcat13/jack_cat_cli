@@ -7,6 +7,7 @@ fn main() {
     let args_number = args.len()-1;
     if check_arguments_number(args_number) {
         let args_processor = build_args_processor(args);
+        args_processor.find_valid_command_and_process();
     }
 
 }
