@@ -31,3 +31,22 @@ impl CommandTrait for HelpCommand {
         vec![]
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn help_command_should_return_command_name_with_generics() {
+        let help_command = Box::new(HelpCommand {});
+        assert_eq!(help_command.command(), "help");
+    }
+
+    #[test]
+    fn help_command_should_return_options_with_generics() {
+        let help_command = Box::new(HelpCommand {});
+        let expected_options: Vec<String> = vec![];
+        assert_eq!(help_command.options(), expected_options);
+    }
+}
