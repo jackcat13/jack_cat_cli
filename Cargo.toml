@@ -6,3 +6,6 @@ edition = "2021"
 [lib]
 name = "args_processor"
 path = "args_processor/src/lib.rs"
+
+[dependencies]
+webbrowser = "0.5.5"

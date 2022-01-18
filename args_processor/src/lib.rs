@@ -62,9 +62,10 @@ pub mod args_processor {
             };
         }
 
-        fn validate_options(&self, options: Vec<String>) -> bool {
+        fn validate_options(&self, options: HashMap<String, String>) -> bool {
+            let keys: Vec<String> = options.keys().cloned().collect();
             for option in self.options.keys() {
-                if !options.contains(option) {
+                if keys.contains(option) || keys.is_empty() {
                     return false;
                 }
             }
