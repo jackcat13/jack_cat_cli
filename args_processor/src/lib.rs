@@ -1,60 +1,73 @@
-pub mod args_processor{
+pub mod args_processor {
 
-    use std::collections::HashMap;
     mod commands;
     use commands::build_commands_collection;
+    use std::collections::HashMap;
 
     const NO_ARG_PROVIDED_ERROR: &str = "No arguments provided!";
     const OPTIONS_WITH_NO_VALUE_ERROR: &str = "No value provided for an option!";
-    const INVALID_COMMAND_ERROR: &str = "Invalid command. Either the command or the options are incorrect!";
+    const INVALID_COMMAND_ERROR: &str =
+        "Invalid command. Either the command or the options are incorrect!";
 
-    pub fn check_arguments_number(number: usize) -> bool{
-        if number == 0 { panic!("{}", NO_ARG_PROVIDED_ERROR.to_string()) }
-        else { return true }
+    pub fn check_arguments_number(number: usize) -> bool {
+        if number == 0 {
+            panic!("{}", NO_ARG_PROVIDED_ERROR.to_string())
+        } else {
+            return true;
+        }
     }
 
     pub fn build_args_processor(arguments: Vec<String>) -> ArgsProcessor {
-        let mut args_processor = ArgsProcessor{ command: String::from(""), options: HashMap::new() };
-        let arguments_iter = arguments.iter().filter( |arg| !arg.contains("jack_cat_cli") ); //filter to remove script from arguments list
+        let mut args_processor = ArgsProcessor {
+            command: String::from(""),
+            options: HashMap::new(),
+        };
+        let arguments_iter = arguments.iter().filter(|arg| !arg.contains("jack_cat_cli")); //filter to remove script from arguments list
         let mut current_option = String::from("");
         for arg in arguments_iter {
-            if args_processor.command == String::from("") { args_processor.command = String::from(arg) }
-            else if current_option == String::from("") {
+            if args_processor.command == String::from("") {
+                args_processor.command = String::from(arg)
+            } else if current_option == String::from("") {
                 current_option = String::from(arg);
-            }
-            else if current_option != String::from("") {
-                args_processor.options.insert(String::from(current_option), String::from(arg));
+            } else if current_option != String::from("") {
+                args_processor
+                    .options
+                    .insert(String::from(current_option), String::from(arg));
                 current_option = String::from("");
             }
         }
-        if current_option != String::from("") { panic!("{}", OPTIONS_WITH_NO_VALUE_ERROR.to_string()) }
+        if current_option != String::from("") {
+            panic!("{}", OPTIONS_WITH_NO_VALUE_ERROR.to_string())
+        }
         return args_processor;
     }
 
-    #[derive(Default)]
-    #[derive(Debug)]
-    pub struct ArgsProcessor{
+    #[derive(Default, Debug)]
+    pub struct ArgsProcessor {
         pub command: String,
-        pub options: HashMap<String, String>
+        pub options: HashMap<String, String>,
     }
 
-    impl ArgsProcessor{
-        pub fn find_valid_command_and_process(&self)
-        {
+    impl ArgsProcessor {
+        pub fn find_valid_command_and_process(&self) {
             let mut found = false;
-            for command in build_commands_collection(){
+            for command in build_commands_collection() {
                 if command.command() == self.command && self.validate_options(command.options()) {
                     command.process();
                     found = true;
                 }
             }
-            if !found { panic!("{}", INVALID_COMMAND_ERROR.to_string()) };
+            if !found {
+                panic!("{}", INVALID_COMMAND_ERROR.to_string())
+            };
         }
 
-        fn validate_options(&self, options: Vec<String>) -> bool{
+        fn validate_options(&self, options: Vec<String>) -> bool {
             let mut found = true;
-            for option in self.options.keys(){
-                if !options.contains(option) { found = false }
+            for option in self.options.keys() {
+                if !options.contains(option) {
+                    found = false
+                }
             }
             return found;
         }
@@ -64,8 +77,8 @@ pub mod args_processor{
 #[cfg(test)]
 mod tests {
 
-    use std::collections::HashMap;
     use super::args_processor::*;
+    use std::collections::HashMap;
 
     #[test]
     fn check_arguments_number_should_return_true_when_stricly_positive() {
@@ -89,7 +102,11 @@ mod tests {
 
     #[test]
     fn build_args_processor_should_return_processor_with_options() {
-        let processor = build_args_processor(vec!("help".to_string(), "--optionTest".to_string(), "value".to_string()));
+        let processor = build_args_processor(vec![
+            "help".to_string(),
+            "--optionTest".to_string(),
+            "value".to_string(),
+        ]);
         let mut expected_hash_map: HashMap<String, String> = HashMap::default();
         expected_hash_map.insert(String::from("--optionTest"), String::from("value"));
         assert_eq!(processor.command, String::from("help"));
@@ -99,18 +116,29 @@ mod tests {
     #[test]
     #[should_panic(expected = "No value provided for an option!")]
     fn build_args_processor_should_return_error_with_option_without_value() {
-        build_args_processor(vec!("help".to_string(), "--optionTest".to_string())).find_valid_command_and_process();
+        build_args_processor(vec!["help".to_string(), "--optionTest".to_string()])
+            .find_valid_command_and_process();
     }
 
     #[test]
     #[should_panic(expected = "Invalid command. Either the command or the options are incorrect!")]
     fn build_args_processor_should_return_error_with_invalid_command() {
-        build_args_processor(vec!("doesnotexist".to_string(), "--optionTest".to_string(), "valueTest".to_string())).find_valid_command_and_process();
+        build_args_processor(vec![
+            "doesnotexist".to_string(),
+            "--optionTest".to_string(),
+            "valueTest".to_string(),
+        ])
+        .find_valid_command_and_process();
     }
 
     #[test]
     #[should_panic(expected = "Invalid command. Either the command or the options are incorrect!")]
     fn build_args_processor_should_return_error_with_inexisting_option() {
-        build_args_processor(vec!("help".to_string(), "--optionTest".to_string(), "valueTest".to_string())).find_valid_command_and_process();
+        build_args_processor(vec![
+            "help".to_string(),
+            "--optionTest".to_string(),
+            "valueTest".to_string(),
+        ])
+        .find_valid_command_and_process();
     }
 }
