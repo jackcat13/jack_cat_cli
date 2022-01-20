@@ -22,12 +22,11 @@ pub mod args_processor {
             command: String::from(""),
             options: HashMap::new(),
         };
-        let arguments_iter = arguments.iter().filter(|arg| !arg.contains("jack_cat_cli")); //filter to remove script from arguments list
+        let mut arguments_iter = arguments.iter().filter(|arg| !arg.contains("jack_cat_cli")); //filter to remove script from arguments list
         let mut current_option = String::from("");
+        args_processor.command = String::from(arguments_iter.next().unwrap());
         for arg in arguments_iter {
-            if args_processor.command == *"" {
-                args_processor.command = String::from(arg)
-            } else if current_option == *"" {
+            if current_option == *"" {
                 current_option = String::from(arg);
             } else if current_option != *"" {
                 args_processor
