@@ -20,7 +20,16 @@ fn commands_list() -> String {
 }
 
 pub trait CommandTrait {
+    fn may_process(&self, options: HashMap<String, String>) {
+        let mut help_iter = options.iter().filter(|&(key, _)| key == "--help");
+        if let Some((_, value)) = help_iter.next() {
+            self.process_help(value.to_string());
+            return;
+        }
+        self.process();
+    }
     fn process(&self);
+    fn process_help(&self, value: String);
     fn command(&self) -> String;
     fn options(&self) -> HashMap<String, String>;
 }

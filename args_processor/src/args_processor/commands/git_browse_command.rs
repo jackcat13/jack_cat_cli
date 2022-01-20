@@ -16,6 +16,16 @@ impl CommandTrait for GitBrowseCommand {
             panic!("Could not open the web page!")
         }
     }
+    fn process_help(&self, value: String) {
+        if value == "simple" {
+            println!("A simple command to browse the distant git repo for the current folder openned in the terminal.")
+        } else if value == "verbose" {
+            println!("A simple command to browse the distant git repo for the current folder openned in the terminal.");
+            println!("It is implemented using the webbrowser create available here : https://github.com/amodm/webbrowser-rs")
+        } else {
+            panic!("--help expect simple or verbose value");
+        }
+    }
     fn command(&self) -> String {
         String::from("gitBrowse")
     }

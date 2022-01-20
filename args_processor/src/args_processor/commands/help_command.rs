@@ -10,6 +10,7 @@ impl CommandTrait for HelpCommand {
         println!("Available commands: {}", commands_list());
         println!("To know options of a particular command, please add --help [simple/verbose] option after the <command>.");
     }
+    fn process_help(&self, _value: String) {}
     fn command(&self) -> String {
         String::from("help")
     }

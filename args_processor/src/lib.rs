@@ -52,7 +52,7 @@ pub mod args_processor {
             let mut found = false;
             for command in build_commands_collection() {
                 if command.command() == self.command && self.validate_options(command.options()) {
-                    command.process();
+                    command.may_process(self.options.clone());
                     found = true;
                 }
             }
@@ -64,7 +64,7 @@ pub mod args_processor {
         fn validate_options(&self, options: HashMap<String, String>) -> bool {
             let keys: Vec<String> = options.keys().cloned().collect();
             for option in self.options.keys() {
-                if keys.contains(option) || keys.is_empty() {
+                if keys.is_empty() || !keys.contains(option) {
                     return false;
                 }
             }
@@ -137,6 +137,38 @@ mod tests {
             "help".to_string(),
             "--optionTest".to_string(),
             "valueTest".to_string(),
+        ])
+        .find_valid_command_and_process();
+    }
+
+    #[test]
+    fn build_args_processor_should_process_help_simple_option_when_using_git_browse_command() {
+        build_args_processor(vec![
+            "gitBrowse".to_string(),
+            "--help".to_string(),
+            "simple".to_string(),
+        ])
+        .find_valid_command_and_process();
+    }
+
+    #[test]
+    fn build_args_processor_should_process_help_verbose_option_when_using_git_browse_command() {
+        build_args_processor(vec![
+            "gitBrowse".to_string(),
+            "--help".to_string(),
+            "verbose".to_string(),
+        ])
+        .find_valid_command_and_process();
+    }
+
+    #[test]
+    #[should_panic(expected = "--help expect simple or verbose value")]
+    fn build_args_processor_should_panic_on_help_other_value_option_when_using_git_browse_command()
+    {
+        build_args_processor(vec![
+            "gitBrowse".to_string(),
+            "--help".to_string(),
+            "doesnotexist".to_string(),
         ])
         .find_valid_command_and_process();
     }
