@@ -6,7 +6,7 @@ use help_command::HelpCommand;
 use std::collections::HashMap;
 
 pub fn build_commands_collection() -> Vec<Box<dyn CommandTrait>> {
-    return vec![Box::new(HelpCommand {}), Box::new(GitBrowseCommand {})];
+    vec![Box::new(HelpCommand {}), Box::new(GitBrowseCommand {})]
 }
 
 fn commands_list() -> String {
