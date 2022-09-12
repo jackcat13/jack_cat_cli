@@ -8,4 +8,4 @@ name = "args_processor"
 path = "args_processor/src/lib.rs"
 
 [dependencies]
-webbrowser = "0.7.1"
+webbrowser = "0.8.0"
